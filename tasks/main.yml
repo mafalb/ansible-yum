@@ -1,0 +1,10 @@
+---
+
+- name: yum config
+  template:
+    src: "{{ item }}"
+    dest: /etc/yum.conf
+  with_first_found:
+    - "{{ playbook_dir }}/files/{{ cfg }}"
+    - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
+    - "{{ yum_cfg }}.j2"
