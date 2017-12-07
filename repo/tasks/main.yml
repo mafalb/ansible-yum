@@ -1,0 +1,9 @@
+
+- name: yum repo file for {{ name }} exists
+  yum_repository:
+    name: "{{ name }}"
+    description: "{{ description }}"
+    baseurl: "{{ baseurl }}"
+    enabled: "{{ enabled }}"
+    gpgcheck: "{{ gpgcheck }}"
+    gpgkey: "{{ gpgkey }}"
