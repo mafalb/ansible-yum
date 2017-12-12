@@ -8,3 +8,8 @@
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
     - "{{ yum_cfg }}.j2"
+
+- name: plugins are installed
+  package:
+    name: yum-plugin-versionlock
+    state: present
