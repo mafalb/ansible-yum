@@ -1,5 +1,13 @@
 ---
 
+- name: yum is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum
+    - pygpgme
+
 - name: yum config
   template:
     src: "{{ item }}"

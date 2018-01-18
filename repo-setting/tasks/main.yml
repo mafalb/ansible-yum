@@ -1,0 +1,10 @@
+---
+
+- name: set config value
+  ini_file:
+    path: /etc/yum.repos.d/{{ _repo }}.repo
+    section: "{{ _repo }}"
+    option: "{{ _option }}"
+    value: "{{ _value }}"
+    state: "{{ _state }}"
+    no_extra_spaces: yes
