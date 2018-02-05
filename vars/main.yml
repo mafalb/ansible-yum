@@ -1,0 +1,7 @@
+---
+
+yum:
+  rpmkeys_uri: /etc/pki/rpm-gpg 
+  rpmkeys:
+    - RPM-GPG-KEY-{{ ansible_distribution }}-{{ ansible_distribution_major_version }}
+    - RPM-GPG-KEY-{{ ansible_distribution }}-Debug-{{ ansible_distribution_major_version }}

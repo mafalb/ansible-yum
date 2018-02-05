@@ -1,3 +1,5 @@
 ---
 
 yum_cfg: yum.conf
+#yum:
+#  repo_gpgcheck: 1

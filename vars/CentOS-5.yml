@@ -1,0 +1,4 @@
+---
+
+yum:
+  repo_gpgcheck: 0

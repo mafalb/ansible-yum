@@ -2,10 +2,11 @@
 
 - name: install gpg key
   rpm_key:
-    key: "{{ _key_uri }}"
+    key: "{{ data.key_uri }}"
     state: present
 
 - name: install release rpm
   yum:
-    name: "{{ _rpm_uri }}"
+    name: "{{ data.rpm_uri }}"
     state: present
+  when: data.rpm_uri is defined
