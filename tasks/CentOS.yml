@@ -1,0 +1,13 @@
+---
+
+- name: enable repo_gpgcheck for updates
+  include_role:
+    name: yum/repo-setting
+  vars:
+    _file: CentOS-Base
+    _repo: updates
+    _option: repo_gpgcheck
+    _value: 0
+  tags:
+    - os/provision/2
+  when: ansible_distribution_major_version > 7

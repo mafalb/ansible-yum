@@ -1,0 +1,45 @@
+
+yum/repo
+
+To install external yum repos you would do something like
+
+$ rpm -ivh http://www.example.com/example-release.rpm
+
+If you want to cryptographically verify the install of the release rpm itself you would need the key in advance.
+
+# repo comes from an rpm externally provided
+#
+- name: install example yum repository
+  include_role:
+    name: yum/repo
+    repo_name: "elrepo"
+    repo_src: http://www.example.com/example-release.rpm
+    repo_key:
+      src: "{{ key_src }}"
+      dest: "{{ key_dest }}"
+      fingerprint: "{{ fingerprint }}"
+
+When an externally rpm is not provided, you want to write your own repo file.
+You don't need a key for the repo itself, obviously, but you need a key for
+subsequent package installs.
+
+# repo definition is self made
+# 
+- name: install gugu yum repository
+  include_role:
+    name: yum/repo
+    repo_name: "gugu"
+    repo_src: "{{ repo_src }}"
+    key:
+      dest: "{{ key_dest }}"
+      src: "{{ key_src }}"
+      fingerprint: "{{ fingerprint }}"
+
+Is a fingerprint needed?
+
+It's actually a little more complex because yum has multiple config directives
+
+gpgcheck
+localpkg_gpgcheck
+payload_gpgcheck
+repo_gpgcheck

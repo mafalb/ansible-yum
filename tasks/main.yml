@@ -1,6 +1,52 @@
 ---
 
-- name: yum config
+- debug: var=yum
+  tags:
+    - debug
+
+- debug: msg={{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml
+  tags:
+    - debug
+
+- name: set os version specific variables
+  include_vars:
+    file: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+      skip: true
+  tags:
+    - always
+
+- debug: var=yum
+  tags:
+    - debug
+
+- name: distribution specific things
+  include: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}.yml"
+      skip: true
+
+- name: keys are imported
+  rpm_key:
+    key: "{{yum.rpmkeys_uri}}/{{ item }}"
+    state: present
+  with_items: "{{ yum.rpmkeys }}"
+  tags:
+    - os2
+  
+- debug: var=ansible_pkg_mgr
+  tags:
+    - debug
+
+# we have a chicken and egg situation here
+# if yum is the default package manager, it is installed
+# but maybe it is not functional, e.g. proxy settings
+# therefore we skip this conditionally
+#
+- name: yum is configured
   template:
     src: "{{ item }}"
     dest: /etc/yum.conf
@@ -8,8 +54,42 @@
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
     - "{{ yum_cfg }}.j2"
+  when: ansible_pkg_mgr == 'yum'
+  tags:
+    - os1
+    - os2
+
+# we have a chicken and egg situation here
+# if yum is the default package manager, it is installed
+# but maybe it is not functional, e.g. proxy settings
+# therefore we skip this conditionally
+#
+- name: yum is installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - yum
+    - pygpgme
+  when: ansible_pkg_mgr != 'yum'
+  tags:
+    - os1
+
+- name: yum is configured
+  template:
+    src: "{{ item }}"
+    dest: /etc/yum.conf
+  with_first_found:
+    - "{{ playbook_dir }}/files/{{ cfg }}"
+    - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
+    - "{{ yum_cfg }}.j2"
+  when: ansible_pkg_mgr != 'yum'
+  tags:
+    - os2
 
 - name: plugins are installed
   package:
     name: yum-plugin-versionlock
     state: present
+  tags:
+    - os3
