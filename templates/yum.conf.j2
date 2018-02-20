@@ -11,7 +11,9 @@ installonly_limit=5
 bugtracker_url=http://bugs.centos.org/set_project.php?project_id=23&ref=http://bugs.centos.org/bug_report_page.php?category=yum
 distroverpkg=centos-release
 
-proxy={{ proxy_protocol }}://{{ proxy_host }}:{{ proxy_port }}
+{% if proxy_host != None %}
+proxy={{ proxy_protocol|default('http') }}://{{ proxy_host }}:{{ proxy_port|default(3128) }}
+{% endif %}
 
 #  This is the default, if you make this bigger yum won't see if the metadata
 # is newer on the remote and so you'll "gain" the bandwidth of not having to
