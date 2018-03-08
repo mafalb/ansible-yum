@@ -3,3 +3,5 @@
 yum_cfg: yum.conf
 #yum:
 #  repo_gpgcheck: 1
+yum:
+  localpkg_gpgcheck: 1
