@@ -1,7 +1,12 @@
 
-- name: yum repo file for {{ name }} exists
+- debug: var=reponame
+  tags:
+    - never
+    - debug
+
+- name: yum repo file exists
   yum_repository:
-    name: "{{ name }}"
+    name: "{{ reponame }}"
     description: "{{ description }}"
     baseurl: "{{ baseurl }}"
     enabled: "{{ enabled }}"
