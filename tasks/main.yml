@@ -2,10 +2,12 @@
 
 - debug: var=yum
   tags:
+    - never
     - debug
 
 - debug: msg={{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml
   tags:
+    - never
     - debug
 
 - name: set os version specific variables
@@ -15,11 +17,10 @@
     - files:
         - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
       skip: true
-  tags:
-    - always
 
 - debug: var=yum
   tags:
+    - never
     - debug
 
 - name: distribution specific things
@@ -34,11 +35,10 @@
     key: "{{yum.rpmkeys_uri}}/{{ item }}"
     state: present
   with_items: "{{ yum.rpmkeys }}"
-  tags:
-    - os2
 
 - debug: var=ansible_pkg_mgr
   tags:
+    - never
     - debug
 
 # we have a chicken and egg situation here
@@ -47,6 +47,7 @@
 # therefore we skip this conditionally
 #
 - name: yum is configured
+  when: ansible_pkg_mgr == 'yum'
   template:
     src: "{{ item }}"
     dest: /etc/yum.conf
@@ -54,10 +55,6 @@
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
     - "{{ yum_cfg }}.j2"
-  when: ansible_pkg_mgr == 'yum'
-  tags:
-    - os1
-    - os2
 
 # we have a chicken and egg situation here
 # if yum is the default package manager, it is installed
@@ -65,17 +62,16 @@
 # therefore we skip this conditionally
 #
 - name: yum is installed
+  when: ansible_pkg_mgr != 'yum'
   package:
     name: "{{ item }}"
     state: present
   with_items:
     - yum
     - pygpgme
-  when: ansible_pkg_mgr != 'yum'
-  tags:
-    - os1
 
 - name: yum is configured
+  when: ansible_pkg_mgr != 'yum'
   template:
     src: "{{ item }}"
     dest: /etc/yum.conf
@@ -83,13 +79,8 @@
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
     - "{{ yum_cfg }}.j2"
-  when: ansible_pkg_mgr != 'yum'
-  tags:
-    - os2
 
 - name: plugins are installed
   package:
     name: yum-plugin-versionlock
     state: present
-  tags:
-    - os3
