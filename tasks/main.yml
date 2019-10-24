@@ -52,6 +52,7 @@
   template:
     src: "{{ item }}"
     dest: /etc/yum.conf
+    backup: true
   with_first_found:
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
@@ -76,6 +77,7 @@
   template:
     src: "{{ item }}"
     dest: /etc/yum.conf
+    backup: true
   with_first_found:
     - "{{ playbook_dir }}/files/{{ cfg }}"
     - "{{ playbook_dir }}/templates/{{ cfg }}.j2"
